@@ -10,6 +10,7 @@ const Navigation = () => {
         <Link href="/" className="font-bold text-xl">
           KnowNext
         </Link>
+        
       </div>
     </header>
   )
