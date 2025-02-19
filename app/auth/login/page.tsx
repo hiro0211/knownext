@@ -7,7 +7,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Loading from "../../loading";
 
+// Supabaseクライアント
 import { supabase } from "@/lib/supabaseClient";
+
+// shadcn/uiフォーム関連
 import {
   Form,
   FormField,
@@ -18,27 +21,28 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+
 import Link from "next/link";
 
-// バリデーション用のZodスキーマ
-const signUpSchema = z.object({
+// Zodでバリデーションのルールを定義
+const loginSchema = z.object({
   email: z.string().email("メールアドレスの形式が正しくありません"),
   password: z.string().min(8, "パスワードは8文字以上で入力してください"),
 });
 
-// スキーマから型を生成
-type SignUpFormValues = z.infer<typeof signUpSchema>;
+// バリデーションで使う型
+type LoginFormValues = z.infer<typeof loginSchema>;
 
-export default function SignUpPage() {
+export default function LoginPage() {
   const router = useRouter();
 
-  // ローディングとメッセージ表示用の状態
+  // ローディング状態 & メッセージ状態
   const [loading, setLoading] = React.useState(false);
   const [message, setMessage] = React.useState("");
 
-  // react-hook-formの初期化
-  const form = useForm<SignUpFormValues>({
-    resolver: zodResolver(signUpSchema),
+  // react-hook-form の初期化
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -46,65 +50,54 @@ export default function SignUpPage() {
   });
 
   // フォーム送信時の処理
-  const onSubmit = async (values: SignUpFormValues) => {
-    setLoading(true);
-    setMessage("");
+  const onSubmit = async (values: LoginFormValues) => {
+    setLoading(true); // ローディング開始
+    setMessage(""); // メッセージを一旦クリア
+
     const { email, password } = values;
 
-    // 1) Supabase Authでユーザー作成
-    const { data, error } = await supabase.auth.signUp({
+    // Supabase Authを使ったログイン
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
+    // エラーがあればメッセージ表示
     if (error) {
-      console.error("新規登録にエラーが発生しています:", error.message);
       setMessage(error.message);
       setLoading(false);
       return;
     }
 
-    // 2) カスタムUsersテーブルへの登録
-    if (data.user) {
-      const { error: insertError } = await supabase.from("Users").insert({
-        id: data.user.id, // AuthユーザーID (UUID)
-        email: data.user.email, // メールアドレス
-      });
-
-      if (insertError) {
-        console.error("Insert user error:", insertError.message);
-        setMessage("ユーザー情報の保存に失敗しました。");
-        setLoading(false);
-        return;
-      }
-    }
-
-    setMessage("新規登録が完了しました。ログインしてください。");
+    // ログイン成功
+    setMessage("ログインに成功しました。");
     setLoading(false);
-    // 数秒後にログイン画面へ遷移
+
+    // 2秒後にトップページなど任意の場所へ遷移
     setTimeout(() => {
-      router.push("/auth/login");
+      router.push("/");
     }, 2000);
   };
 
   return (
     <div className="relative flex flex-col items-center justify-center w-full max-w-sm mx-auto mt-12">
-      {/* ローディング中は画面中央にアニメーションを表示 */}
+      {/* ローディング中は画面中央にアニメーションを重ねて表示 */}
       {loading && <Loading />}
 
-      <h1 className="text-2xl font-bold mb-4">新規登録</h1>
+      <h1 className="text-2xl font-bold mb-4">ログイン</h1>
 
-      {/* エラーメッセージまたは成功メッセージの表示 */}
+      {/* メッセージ表示 */}
       {message && (
         <div className="text-center text-sm text-red-500 my-5">{message}</div>
       )}
 
+      {/* フォーム本体 */}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-4 w-full"
         >
-          {/* メールアドレス */}
+          {/* Email */}
           <FormField
             control={form.control}
             name="email"
@@ -114,16 +107,16 @@ export default function SignUpPage() {
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder="メールアドレスを入力"
+                    placeholder="Enter your email"
                     {...field}
                   />
                 </FormControl>
-                <FormMessage className="text-red-500" />
+                <FormMessage />
               </FormItem>
             )}
           />
 
-          {/* パスワード */}
+          {/* Password */}
           <FormField
             control={form.control}
             name="password"
@@ -133,30 +126,30 @@ export default function SignUpPage() {
                 <FormControl>
                   <Input
                     type="password"
-                    placeholder="パスワードを入力"
+                    placeholder="Enter your password"
                     {...field}
                   />
                 </FormControl>
-                <FormMessage className="text-red-500" />
+                <FormMessage />
               </FormItem>
             )}
           />
 
-          {/* 新規登録ボタン */}
+          {/* ログインボタン */}
           <Button
             type="submit"
-            className="w-full bg-blue-600 text-white hover:bg-blue-800 "
+            className="w-full bg-blue-600 text-white hover:bg-blue-800"
           >
-            新規登録
+            ログイン
           </Button>
         </form>
       </Form>
 
-      {/* 既にアカウントを持っていますか？Login */}
+      {/* まだアカウントが無い場合のリンク */}
       <div className="mt-4 text-sm">
-        既にアカウントを持っていますか？{" "}
-        <Link href="/auth/login" className="underline hover:text-primary">
-          ログイン
+        Don&apos;t have an account?{" "}
+        <Link href="/auth/signup" className="underline hover:text-primary">
+          Sign Up
         </Link>
       </div>
     </div>
