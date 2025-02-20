@@ -3,22 +3,28 @@
 import React from "react"
 import Post from "./Post"
 
-// DBのPostsテーブルの型に合わせて定義
+// Postsテーブル + JOINしたUsersテーブル
+// user: { email: string } を含む形
 type PostType = {
   id: number
-  user_id: string
   title: string
   content: string
   image_path: string | null
   created_at: string
-  updated_at: string
+  user?: {
+    email: string
+  }
 }
 
-interface PostListProps {
+type PostListProps = {
   posts: PostType[]
 }
 
 export default function PostList({ posts }: PostListProps) {
+  if (posts.length === 0) {
+    return <div className="text-gray-500">記事がありません</div>
+  }
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
       {posts.map((post) => (
