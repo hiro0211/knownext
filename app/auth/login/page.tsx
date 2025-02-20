@@ -107,11 +107,11 @@ export default function LoginPage() {
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder="メールアドレスを入力"
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
@@ -126,11 +126,11 @@ export default function LoginPage() {
                 <FormControl>
                   <Input
                     type="password"
-                    placeholder="Enter your password"
+                    placeholder="パスワードを入力"
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
@@ -147,9 +147,9 @@ export default function LoginPage() {
 
       {/* まだアカウントが無い場合のリンク */}
       <div className="mt-4 text-sm">
-        Don&apos;t have an account?{" "}
+        アカウントを持っていませんか?{" "}
         <Link href="/auth/signup" className="underline hover:text-primary">
-          Sign Up
+          新規登録
         </Link>
       </div>
     </div>
