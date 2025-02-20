@@ -35,7 +35,6 @@ export default async function Home({
   // 検索クエリがあれば、タイトル or 本文に対して部分一致検索
   if (searchQuery) {
     // ilike: 大文字小文字区別なしの部分一致
-    // or() を使うと複数条件をORでつなげられます
     query = query.or(
       `title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%`
     )
