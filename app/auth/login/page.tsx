@@ -62,6 +62,8 @@ export default function LoginPage() {
       password,
     });
 
+    console.log("ログイン結果", data, error);
+
     // エラーがあればメッセージ表示
     if (error) {
       setMessage(error.message);

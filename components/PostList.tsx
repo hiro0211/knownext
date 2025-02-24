@@ -1,28 +1,28 @@
-"use client"
+"use client";
 
-import React from "react"
-import Post from "./Post"
+import React from "react";
+import Post from "./Post";
 
 // Postsテーブル + JOINしたUsersテーブル
 // user: { email: string } を含む形
 type PostType = {
-  id: number
-  title: string
-  content: string
-  image_path: string | null
-  created_at: string
+  id: number;
+  title: string;
+  content: string;
+  image_path: string | null;
+  created_at: string;
   user?: {
-    email: string
-  }
-}
+    email: string;
+  };
+};
 
 type PostListProps = {
-  posts: PostType[]
-}
+  posts: PostType[];
+};
 
 export default function PostList({ posts }: PostListProps) {
   if (posts.length === 0) {
-    return <div className="text-gray-500">記事がありません</div>
+    return <div className="text-gray-500">記事がありません</div>;
   }
 
   return (
@@ -31,5 +31,5 @@ export default function PostList({ posts }: PostListProps) {
         <Post key={post.id} post={post} />
       ))}
     </div>
-  )
+  );
 }

@@ -1,70 +1,68 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabaseClient"
-import dayjs from "dayjs"
-import Loading from "@/app/loading" // 既存のLoadingコンポーネントをimport
-import { Button } from "@/components/ui/button"
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabaseClient";
+import dayjs from "dayjs";
+import Loading from "@/app/loading"; // 既存のLoadingコンポーネントをimport
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 type PostDetailProps = {
   post: {
-    id: number
-    title: string
-    content: string
-    image_path: string | null
-    created_at: string
+    id: number;
+    title: string;
+    content: string;
+    image_path: string | null;
+    created_at: string;
     user?: {
-      id: string
-      email: string
-    }
-  }
-}
+      id: string;
+      email: string;
+    };
+  };
+};
 
 export default function PostDetail({ post }: PostDetailProps) {
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState("")
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   // 現在ログイン中のユーザーIDを取得
-  const [sessionUserId, setSessionUserId] = useState<string | null>(null)
+  const [sessionUserId, setSessionUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data } = await supabase.auth.getUser()
-      setSessionUserId(data.user?.id ?? null)
-    }
-    fetchUser()
-  }, [])
+      const { data } = await supabase.auth.getUser();
+      setSessionUserId(data.user?.id ?? null);
+    };
+    fetchUser();
+  }, []);
 
   // 投稿者本人かどうかを判定
-  const isAuthor = sessionUserId === post.user?.id
+  const isAuthor = sessionUserId === post.user?.id;
 
   // 日付のフォーマット
-  const formattedDate = dayjs(post.created_at).format("YYYY/MM/DD HH:mm")
+  const formattedDate = dayjs(post.created_at).format("YYYY/MM/DD HH:mm");
 
   // 記事削除
   const handleDelete = async () => {
-    setLoading(true)
-    setMessage("")
-    const { error } = await supabase
-      .from("Posts")
-      .delete()
-      .eq("id", post.id)
+    setLoading(true);
+    setMessage("");
+    const { error } = await supabase.from("Posts").delete().eq("id", post.id);
 
     if (error) {
-      setMessage("記事の削除に失敗しました: " + error.message)
-      setLoading(false)
-      return
+      setMessage("記事の削除に失敗しました: " + error.message);
+      setLoading(false);
+      return;
     }
 
-    setMessage("記事を削除しました。")
-    setLoading(false)
+    setMessage("記事を削除しました。");
+    setLoading(false);
     // 2秒後にトップページへリダイレクト
     setTimeout(() => {
-      router.push("/")
-    }, 2000)
-  }
+      router.push("/");
+    }, 2000);
+  };
 
   return (
     <div className="relative">
@@ -106,6 +104,13 @@ export default function PostDetail({ post }: PostDetailProps) {
           記事を削除
         </Button>
       )}
+      {isAuthor && (
+        <Link href={`/posts/${post.id}/edit`}>
+          <Button className="bg-blue-500 text-white hover:bg-blue-600 ml-2">
+            記事を編集
+          </Button>
+        </Link>
+      )}
     </div>
-  )
+  );
 }

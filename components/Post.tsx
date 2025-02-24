@@ -1,29 +1,29 @@
-"use client"
+"use client";
 
-import React from "react"
-import dayjs from "dayjs"
-import Link from "next/link"
+import React from "react";
+import dayjs from "dayjs";
+import Link from "next/link";
 
 type PostProps = {
   post: {
-    id: number
-    title: string
-    content: string
-    image_path: string | null
-    created_at: string
+    id: number;
+    title: string;
+    content: string;
+    image_path: string | null;
+    created_at: string;
     user?: {
-      email: string
-    }
-  }
-}
+      email: string;
+    };
+  };
+};
 
 export default function Post({ post }: PostProps) {
   // 日付表示のフォーマット(dayjs)
-  const formattedDate = dayjs(post.created_at).format("YYYY/MM/DD HH:mm")
+  const formattedDate = dayjs(post.created_at).format("YYYY/MM/DD HH:mm");
 
   // 投稿者メールアドレス (JOIN済み)
-  const author = post.user?.email || "Unknown User"
-
+  const author = post.user?.email || "Unknown User";
+  console.log("イメージURLは" + post.image_path);
   return (
     <Link href={`/posts/${post.id}`} className="block">
       <div className="border rounded-md p-4 shadow-sm hover:shadow-md transition-shadow">
@@ -54,5 +54,5 @@ export default function Post({ post }: PostProps) {
         <p className="text-sm text-gray-700 line-clamp-2">{post.content}</p>
       </div>
     </Link>
-  )
+  );
 }
