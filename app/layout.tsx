@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { M_PLUS_1 } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import Navigation from "@/components/navigation/Navigation"
+
 
 const mPlus1 = M_PLUS_1({
   weight: ["400", "700", "900"],
@@ -29,6 +31,7 @@ const RootLayout = async ({ children }: RootLayoutProps) => {
   return (
     <html lang="ja">
       <body className={mPlus1.className}>
+        <Toaster />
         <div className="flex min-h-screen flex-col">
           <Navigation />
 

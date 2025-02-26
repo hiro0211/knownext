@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import Loading from "../../loading";
+import toast from "react-hot-toast";
 
 // Supabaseクライアント
 import { supabase } from "@/lib/supabaseClient";
@@ -36,10 +36,6 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const router = useRouter();
 
-  // ローディング状態 & メッセージ状態
-  const [loading, setLoading] = React.useState(false);
-  const [message, setMessage] = React.useState("");
-
   // react-hook-form の初期化
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -51,8 +47,7 @@ export default function LoginPage() {
 
   // フォーム送信時の処理
   const onSubmit = async (values: LoginFormValues) => {
-    setLoading(true); // ローディング開始
-    setMessage(""); // メッセージを一旦クリア
+    toast.loading("ログイン中...");
 
     const { email, password } = values;
 
@@ -62,36 +57,24 @@ export default function LoginPage() {
       password,
     });
 
-    console.log("ログイン結果", data, error);
-
     // エラーがあればメッセージ表示
     if (error) {
-      setMessage(error.message);
-      setLoading(false);
+      toast.dismiss()
+      toast.error("ログインに失敗しました: " + error.message)
       return;
     }
 
     // ログイン成功
-    setMessage("ログインに成功しました。");
-    setLoading(false);
+    toast.dismiss();
+    toast.success("ログインに成功しました");
 
-    // 2秒後にトップページなど任意の場所へ遷移
-    setTimeout(() => {
-      router.push("/");
-    }, 2000);
+    // ログイン後のページに遷移
+    router.push("/");
   };
 
   return (
     <div className="relative flex flex-col items-center justify-center w-full max-w-sm mx-auto mt-12">
-      {/* ローディング中は画面中央にアニメーションを重ねて表示 */}
-      {loading && <Loading />}
-
       <h1 className="text-2xl font-bold mb-4">ログイン</h1>
-
-      {/* メッセージ表示 */}
-      {message && (
-        <div className="text-center text-sm text-red-500 my-5">{message}</div>
-      )}
 
       {/* フォーム本体 */}
       <Form {...form}>

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import Loading from "../../loading";
+import toast from "react-hot-toast";
 
 import { supabase } from "@/lib/supabaseClient";
 import {
@@ -47,8 +47,8 @@ export default function SignUpPage() {
 
   // フォーム送信時の処理
   const onSubmit = async (values: SignUpFormValues) => {
-    setLoading(true);
-    setMessage("");
+    toast.loading("ユーザー登録中...");
+
     const { email, password } = values;
 
     // 1) Supabase Authでユーザー作成
@@ -58,9 +58,8 @@ export default function SignUpPage() {
     });
 
     if (error) {
-      console.error("新規登録にエラーが発生しています:", error.message);
-      setMessage(error.message);
-      setLoading(false);
+      toast.dismiss();
+      toast.error("ユーザー登録中にエラーが発生しました: " + error.message);
       return;
     }
 
@@ -72,31 +71,24 @@ export default function SignUpPage() {
       });
 
       if (insertError) {
-        console.error("Insert user error:", insertError.message);
-        setMessage("ユーザー情報の保存に失敗しました。");
-        setLoading(false);
+        toast.dismiss();
+        toast.error(
+          "ユーザー情報保存中にエラーが発生しました: " + insertError.message
+        );
         return;
       }
     }
 
+    toast.dismiss();
     setMessage(
       "仮登録が完了しました。ご入力いただいたメールアドレスに確認用のメールを送信しました。\
       メールに記載されたリンクをクリックしてアカウントを有効化してください。\
       もしメールが届かない場合は、迷惑メールフォルダに入っていないかご確認ください。"
-      );
-      
-    setLoading(false);
-    // 数秒後にログイン画面へ遷移
-    setTimeout(() => {
-      router.push("/auth/login");
-    }, 2000);
+    );
   };
 
   return (
     <div className="relative flex flex-col items-center justify-center w-full max-w-sm mx-auto mt-12">
-      {/* ローディング中は画面中央にアニメーションを表示 */}
-      {loading && <Loading />}
-
       <h1 className="text-2xl font-bold mb-4">新規登録</h1>
 
       {/* エラーメッセージまたは成功メッセージの表示 */}
