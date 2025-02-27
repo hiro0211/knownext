@@ -49,13 +49,6 @@ export default function Navigation() {
           {user ? (
             <>
               <Link 
-                href="/posts/new" 
-                className="flex items-center space-x-1 transition-colors hover:text-blue-600"
-              >
-                <PenSquare className="h-5 w-5" />
-                <span>投稿</span>
-              </Link>
-              <Link 
                 href="/mypage" 
                 className="flex items-center space-x-1 transition-colors hover:text-blue-600"
               >
