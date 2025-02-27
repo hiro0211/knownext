@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { LogOut } from "lucide-react"
+import { LogOut, PenSquare, User as UserIcon } from "lucide-react"
 import { User } from "@supabase/supabase-js"
 import { supabase } from "@/lib/supabaseClient"
 
 export default function Navigation() {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
 
   // onAuthStateChangeで認証状態の変更を監視する
   useEffect(() => {
@@ -33,38 +34,85 @@ export default function Navigation() {
   }, [])
 
   const handleLogout = async () => {
-    if (!window.confirm("ログアウトしますが、宜しいですか？")) {
-      return
-    }
     await supabase.auth.signOut()
-    // ここでsetUser(null) はonAuthStateChangeのイベントで自動更新されるので不要
+    setShowLogoutConfirm(false)
     router.push("/auth/login")
   }
 
   return (
-    <header className="border-b">
+    <header className="border-b relative">
       <div className="mx-auto max-w-screen-lg px-2 py-5 flex items-center justify-between">
-        <Link href="/" className="font-bold text-xl">
+        <Link href="/" className="font-bold text-xl mr-3">
           KnowNext
         </Link>
         <div className="flex items-center space-x-5 text-sm font-bold">
           {user ? (
             <>
-              <Link href="/posts/new">投稿</Link>
-              <Link href="/mypage">マイページ</Link>
-              <button onClick={handleLogout} className="flex items-center space-x-1">
+              <Link 
+                href="/posts/new" 
+                className="flex items-center space-x-1 transition-colors hover:text-blue-600"
+              >
+                <PenSquare className="h-5 w-5" />
+                <span>投稿</span>
+              </Link>
+              <Link 
+                href="/mypage" 
+                className="flex items-center space-x-1 transition-colors hover:text-blue-600"
+              >
+                <UserIcon className="h-5 w-5" />
+                <span>マイページ</span>
+              </Link>
+              <button 
+                onClick={() => setShowLogoutConfirm(true)} 
+                className="flex items-center space-x-1 text-gray-700 hover:text-red-600 transition-colors"
+              >
                 <LogOut className="h-5 w-5" />
                 <span>ログアウト</span>
               </button>
             </>
           ) : (
             <>
-              <Link href="/auth/login">ログイン</Link>
-              <Link href="/auth/signup">新規登録</Link>
+              <Link 
+                href="/auth/login"
+                className="px-4 py-2 rounded-md text-blue-600 hover:bg-blue-50 transition-colors"
+              >
+                ログイン
+              </Link>
+              <Link 
+                href="/auth/signup"
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              >
+                新規登録
+              </Link>
             </>
           )}
         </div>
       </div>
+
+      {/* ログアウト確認モーダル */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-md p-6 shadow-lg max-w-sm w-full mx-4">
+            <h3 className="font-bold text-lg mb-4">ログアウト確認</h3>
+            <p className="text-gray-700 mb-6">ログアウトしますが、宜しいですか？</p>
+            <div className="flex space-x-3 justify-end">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                キャンセル
+              </button>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center space-x-2"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>ログアウト</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   )
 }

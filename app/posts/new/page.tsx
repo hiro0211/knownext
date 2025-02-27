@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
 import { supabase } from "@/lib/supabaseClient"
+import toast from "react-hot-toast";
 import Loading from "@/app/loading"
 
 import {
@@ -32,10 +33,6 @@ type PostFormValues = z.infer<typeof postSchema>
 
 export default function NewPostPage() {
   const router = useRouter()
-
-  // ローディングとメッセージ表示用
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState("")
   // ファイル入力を管理 (react-hook-formの外で管理)
   const [file, setFile] = useState<File | null>(null)
 
@@ -59,8 +56,7 @@ export default function NewPostPage() {
 
   // フォーム送信時
   const onSubmit = async (values: PostFormValues) => {
-    setLoading(true)
-    setMessage("")
+    toast.loading(" 投稿中...");
 
     try {
       // 1) ログイン中のユーザーIDを取得
@@ -69,8 +65,8 @@ export default function NewPostPage() {
         error: userError,
       } = await supabase.auth.getUser()
       if (userError || !user) {
-        setMessage("ログインしていません。")
-        setLoading(false)
+        toast.dismiss();
+        toast.error("ログインしてください " );
         return
       }
 
@@ -88,8 +84,8 @@ export default function NewPostPage() {
           })
 
         if (uploadError) {
-          setMessage(`画像アップロードに失敗しました: ${uploadError.message}`)
-          setLoading(false)
+          toast.dismiss();
+          toast.error(`画像アップロードに失敗しました: ${uploadError.message}`)
           return
         }
 
@@ -109,34 +105,27 @@ export default function NewPostPage() {
       })
 
       if (insertError) {
-        setMessage(`投稿に失敗しました: ${insertError.message}`)
-        setLoading(false)
+        toast.dismiss();
+        toast.error(`投稿に失敗しました: ${insertError.message}`)
         return
       }
 
       // 4) 成功したらメッセージを表示 & トップページに遷移 (or /posts/:id)
-      setMessage("記事を投稿しました。")
-      setLoading(false)
+      toast.dismiss();
+      toast.success("記事を投稿しました。");
 
       setTimeout(() => {
         router.push("/")
       }, 2000)
     } catch (err: any) {
       console.error(err)
-      setMessage(`エラーが発生しました: ${err.message}`)
-      setLoading(false)
+      toast.dismiss();
+      toast.error(`エラーが発生しました: ${err.message}`);
     }
   }
 
   return (
     <div className="relative w-full max-w-2xl mx-auto mt-8 p-4">
-      {/* ローディング中にアニメーションを重ねて表示 */}
-      {loading && <Loading />}
-
-      {/* メッセージ表示 */}
-      {message && (
-        <div className="text-center text-sm text-red-500 my-5">{message}</div>
-      )}
 
       <h1 className="text-2xl font-bold mb-6">新規投稿</h1>
 
