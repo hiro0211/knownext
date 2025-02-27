@@ -1,5 +1,3 @@
-import { cookies } from "next/headers";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { FileText, PenSquare } from "lucide-react";
 import Link from "next/link";
 import SearchForm from "../components/SearchForm";
@@ -27,7 +25,7 @@ export default async function Home({
           <h1 className="text-2xl font-bold">記事一覧</h1>
           {searchQuery && (
             <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-              "{searchQuery}"
+              &quot;{searchQuery}&quot;
             </span>
           )}
         </div>

@@ -1,16 +1,12 @@
 "use client";
 
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import PostList from "@/components/PostList";
-import { useRouter } from "next/navigation";
 import { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabaseClient";
 
 export default async function MyPage() {
   // Supabaseクライアント (サーバーコンポーネント用)
-  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {

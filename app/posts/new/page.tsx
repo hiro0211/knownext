@@ -116,7 +116,7 @@ export default function NewPostPage() {
         const fileExt = file.name.split(".").pop();
         const fileName = `${user.id}_${Date.now()}.${fileExt}`;
 
-        const { data: uploadData, error: uploadError } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from("images")
           .upload(`posts/${fileName}`, file, {
             cacheControl: "3600",

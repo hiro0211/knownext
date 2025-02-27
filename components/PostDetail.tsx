@@ -4,10 +4,16 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import dayjs from "dayjs";
-import Loading from "@/app/loading";
+import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { CalendarClock, Mail, ArrowLeft, Trash, Edit, AlertCircle } from "lucide-react";
+import {
+  CalendarClock,
+  Mail,
+  ArrowLeft,
+  Trash,
+  Edit,
+} from "lucide-react";
 
 type PostDetailProps = {
   post: {
@@ -25,11 +31,7 @@ type PostDetailProps = {
 
 export default function PostDetail({ post }: PostDetailProps) {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-
-  // 現在ログイン中のユーザーIDを取得
   const [sessionUserId, setSessionUserId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -40,56 +42,40 @@ export default function PostDetail({ post }: PostDetailProps) {
     fetchUser();
   }, []);
 
-  // 投稿者本人かどうかを判定
   const isAuthor = sessionUserId === post.user?.id;
-
-  // 日付のフォーマット
   const formattedDate = dayjs(post.created_at).format("YYYY/MM/DD HH:mm");
 
-  // 記事削除
+  // 記事削除処理（hot-toast を利用）
   const handleDelete = async () => {
-    setLoading(true);
+    const toastId = toast.loading("記事を削除中...");
     try {
       const { error } = await supabase.from("Posts").delete().eq("id", post.id);
-
       if (error) {
         throw error;
       }
-
-      setMessage("記事を削除しました。");
-      // 2秒後にトップページへリダイレクト
+      toast.dismiss(toastId);
+      toast.success("記事を削除しました。");
       setTimeout(() => {
         router.push("/");
       }, 2000);
     } catch (error: any) {
-      setMessage("記事の削除に失敗しました: " + error.message);
+      toast.dismiss(toastId);
+      toast.error("記事の削除に失敗しました: " + error.message);
     } finally {
-      setLoading(false);
       setShowConfirmDelete(false);
     }
   };
 
   return (
     <div className="max-w-4xl mx-auto py-6 px-4">
-      {/* ローディングアニメーション */}
-      {loading && <Loading />}
-
       {/* 戻るリンク */}
-      <Link 
-        href="/" 
+      <Link
+        href="/"
         className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors mb-6"
       >
         <ArrowLeft className="h-4 w-4 mr-1" />
         <span>記事一覧に戻る</span>
       </Link>
-
-      {/* メッセージ表示 */}
-      {message && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-md text-sm text-red-800 flex items-start">
-          <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0 text-red-500" />
-          <p>{message}</p>
-        </div>
-      )}
 
       <div className="border rounded-lg shadow-sm overflow-hidden bg-white">
         {/* 画像表示 */}
@@ -110,13 +96,11 @@ export default function PostDetail({ post }: PostDetailProps) {
         <div className="p-6">
           {/* タイトル・投稿者情報 */}
           <h1 className="text-2xl md:text-3xl font-bold mb-4">{post.title}</h1>
-          
           <div className="flex flex-wrap items-center space-x-4 mb-6 pb-4 border-b border-gray-100">
             <div className="flex items-center text-gray-500 space-x-1">
               <Mail className="h-4 w-4" />
               <span>{post.user?.email || "Unknown User"}</span>
             </div>
-            
             <div className="flex items-center text-gray-500 space-x-1">
               <CalendarClock className="h-4 w-4" />
               <span>{formattedDate}</span>
@@ -125,7 +109,9 @@ export default function PostDetail({ post }: PostDetailProps) {
 
           {/* 本文 */}
           <div className="prose max-w-none mb-8">
-            <p className="whitespace-pre-line text-gray-700 leading-relaxed">{post.content}</p>
+            <p className="whitespace-pre-line text-gray-700 leading-relaxed">
+              {post.content}
+            </p>
           </div>
 
           {/* 投稿者アクションボタン */}
@@ -150,9 +136,11 @@ export default function PostDetail({ post }: PostDetailProps) {
                 </>
               ) : (
                 <div className="w-full p-4 bg-red-50 border border-red-100 rounded-md">
-                  <p className="text-sm text-red-800 mb-3">この記事を削除してもよろしいですか？この操作は取り消せません。</p>
+                  <p className="text-sm text-red-800 mb-3">
+                    この記事を削除してもよろしいですか？この操作は取り消せません。
+                  </p>
                   <div className="flex space-x-3 justify-end">
-                    <Button 
+                    <Button
                       variant="outline"
                       onClick={() => setShowConfirmDelete(false)}
                       className="text-gray-700"

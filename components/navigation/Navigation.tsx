@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { LogOut, PenSquare, User as UserIcon } from "lucide-react"
+import { LogOut, User as UserIcon } from "lucide-react"
 import { User } from "@supabase/supabase-js"
 import { supabase } from "@/lib/supabaseClient"
 

@@ -48,7 +48,7 @@ export default function Pagination({
     const maxButtonsToShow = 5
     
     let startPage = Math.max(1, currentPage - Math.floor(maxButtonsToShow / 2))
-    let endPage = Math.min(totalPages, startPage + maxButtonsToShow - 1)
+    const endPage = Math.min(totalPages, startPage + maxButtonsToShow - 1)
     
     // Adjust startPage if we're near the end
     if (endPage - startPage + 1 < maxButtonsToShow) {

@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -31,12 +30,6 @@ const signUpSchema = z.object({
 type SignUpFormValues = z.infer<typeof signUpSchema>;
 
 export default function SignUpPage() {
-  const router = useRouter();
-
-  // ローディングとメッセージ表示用の状態
-  const [loading, setLoading] = React.useState(false);
-  const [message, setMessage] = React.useState("");
-
   // react-hook-formの初期化
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
@@ -48,9 +41,8 @@ export default function SignUpPage() {
 
   // フォーム送信時の処理
   const onSubmit = async (values: SignUpFormValues) => {
-    setLoading(true);
+    // toast.loading でローディング状態を表示し、返ってくるIDで管理する
     toast.loading("ユーザー登録中...");
-
     const { email, password } = values;
 
     try {
@@ -78,14 +70,9 @@ export default function SignUpPage() {
 
       toast.dismiss();
       toast.success("仮登録が完了しました");
-      setMessage(
-        "仮登録が完了しました。ご入力いただいたメールアドレスに確認用のメールを送信しました。メールに記載されたリンクをクリックしてアカウントを有効化してください。もしメールが届かない場合は、迷惑メールフォルダに入っていないかご確認ください。"
-      );
     } catch (error: any) {
       toast.dismiss();
       toast.error("エラーが発生しました: " + error.message);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -98,21 +85,15 @@ export default function SignUpPage() {
             <UserPlus size={24} />
           </div>
           <h1 className="text-2xl font-bold">アカウント作成</h1>
-          <p className="text-gray-500 text-sm mt-1">登録して機能をお試しください</p>
+          <p className="text-gray-500 text-sm mt-1">
+            登録して機能をお試しください
+          </p>
         </div>
 
-        {/* メッセージ表示エリア */}
-        {message && (
-          <div className="mb-6 p-4 bg-blue-50 border border-blue-100 rounded-md text-sm text-blue-800">
-            {message}
-          </div>
-        )}
+        {/* 以前のメッセージ表示エリアは削除 */}
 
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-5"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             {/* メールアドレス */}
             <FormField
               control={form.control}
@@ -163,16 +144,9 @@ export default function SignUpPage() {
             <Button
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition-colors flex items-center justify-center"
-              disabled={loading}
             >
-              {loading ? (
-                "登録中..."
-              ) : (
-                <>
-                  アカウント作成
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </>
-              )}
+              アカウント作成
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </form>
         </Form>
@@ -180,7 +154,10 @@ export default function SignUpPage() {
         {/* 既にアカウントを持っていますか？Login */}
         <div className="mt-6 text-center text-sm text-gray-600 pt-4 border-t border-gray-100">
           既にアカウントを持っていますか？{" "}
-          <Link href="/auth/login" className="text-blue-600 hover:text-blue-800 font-medium transition-colors">
+          <Link
+            href="/auth/login"
+            className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
+          >
             ログイン
           </Link>
         </div>
