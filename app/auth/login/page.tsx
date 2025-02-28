@@ -72,9 +72,10 @@ export default function LoginPage() {
 
       // ログイン後のページに遷移
       router.push("/");
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.dismiss();
-      toast.error("ログインに失敗しました: " + error.message);
+      if (error instanceof Error) {
+        toast.error("ログインに失敗しました: " + error.message)};
     } finally {
       setLoading(false);
     }

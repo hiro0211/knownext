@@ -7,13 +7,7 @@ import dayjs from "dayjs";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import {
-  CalendarClock,
-  Mail,
-  ArrowLeft,
-  Trash,
-  Edit,
-} from "lucide-react";
+import { CalendarClock, Mail, ArrowLeft, Trash, Edit } from "lucide-react";
 
 type PostDetailProps = {
   post: {
@@ -58,9 +52,11 @@ export default function PostDetail({ post }: PostDetailProps) {
       setTimeout(() => {
         router.push("/");
       }, 2000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.dismiss(toastId);
-      toast.error("記事の削除に失敗しました: " + error.message);
+      if (error instanceof Error) {
+        toast.error("記事の削除に失敗しました: " + error.message);
+      }
     } finally {
       setShowConfirmDelete(false);
     }

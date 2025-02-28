@@ -162,12 +162,14 @@ export default function NewPostPage() {
       setTimeout(() => {
         router.push("/");
       }, 1500);
-    } catch (err: any) {
-      console.error(err);
+    } catch (error: unknown) {
       toast.dismiss();
-      toast.error("エラーが発生しました");
-      setFormError(`予期せぬエラー: ${err.message}`);
-      setSubmitting(false);
+      if (error instanceof Error) {
+        toast.error("エラーが発生しました");
+        setFormError(`予期せぬエラー: ${error.message}`);
+        setSubmitting(false);
+        return;
+      }
     }
   };
 

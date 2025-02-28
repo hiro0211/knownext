@@ -70,9 +70,11 @@ export default function SignUpPage() {
 
       toast.dismiss();
       toast.success("仮登録が完了しました");
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.dismiss();
-      toast.error("エラーが発生しました: " + error.message);
+      if (error instanceof Error) {
+        toast.error("エラーが発生しました: " + error.message);
+      }
     }
   };
 
