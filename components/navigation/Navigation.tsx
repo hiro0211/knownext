@@ -41,7 +41,7 @@ export default function Navigation() {
 
   return (
     <header className="border-b relative">
-      <div className="mx-auto max-w-screen-lg px-2 py-5 flex items-center justify-between">
+      <div className="w-full max-w-6xl mx-auto px-4 py-8 flex items-center justify-between">
         <Link href="/" className="font-bold text-xl mr-3">
           KnowNext
         </Link>

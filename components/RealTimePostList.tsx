@@ -59,8 +59,8 @@ export default function RealTimePostList({ page, searchQuery = "" }: RealTimePos
           table: "Posts",
         },
         async (payload) => {
-          // 新規投稿時、条件に合うかチェックした上でstate更新
-          // ※シンプルな例として、常に先頭に追加する例です
+          // 新規投稿時、条件に合うかチェックした上でstate更
+          // 常に一番上に追加されるようにする
           const { data: newPost, error } = await supabase
             .from("Posts")
             .select("*, user:Users(email)")

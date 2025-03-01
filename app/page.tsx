@@ -1,9 +1,12 @@
+import { cookies } from "next/headers";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { FileText, PenSquare } from "lucide-react";
 import Link from "next/link";
 import SearchForm from "../components/SearchForm";
 import Pagination from "../components/Pagination";
-import RealTimePostList from "../components/RealTimePostList"; // ここでリアルタイム用コンポーネントをインポート
+import RealTimePostList from "../components/RealTimePostList";
 
+// Home ページはサーバーコンポーネント
 export default async function Home({
   searchParams,
 }: {
@@ -11,10 +14,28 @@ export default async function Home({
 }) {
   const searchQuery = searchParams.search || "";
   const page = parseInt(searchParams.page || "1", 10);
+  // 1ページあたりの表示数
+  const limit = 9;
 
-  // ページネーションなどのサーバー側処理はそのままで、
-  // 投稿一覧部分のみをリアルタイム更新対応のコンポーネントに委ねる
-  const totalPages = 5; // 例: ページネーション用の仮の値
+  // サーバーコンポーネント用 Supabase クライアントの作成
+  const supabase = createServerComponentClient({ cookies });
+
+  // 投稿数のカウントクエリを作成
+  let countQuery = supabase
+    .from("Posts")
+    .select("*", { count: "exact", head: true });
+  if (searchQuery) {
+    // 検索条件がある場合、タイトルまたは内容に対して部分一致検索を適用
+    countQuery = countQuery.or(
+      `title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%`
+    );
+  }
+  const { count, error: countError } = await countQuery;
+  if (countError) {
+    console.error("投稿数の取得エラー:", countError.message);
+  }
+  const totalCount = count || 0;
+  const totalPages = Math.ceil(totalCount / limit);
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-8">
@@ -43,13 +64,17 @@ export default async function Home({
         <SearchForm />
       </div>
 
-      {/* 投稿一覧部分: リアルタイム更新対応コンポーネントを利用 */}
+      {/* 投稿一覧部分: リアルタイム更新対応コンポーネント */}
       <RealTimePostList page={page} searchQuery={searchQuery} />
 
       {/* ページネーション */}
       {totalPages > 1 && (
         <div className="mt-8">
-          <Pagination currentPage={page} totalPages={totalPages} searchQuery={searchQuery} />
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            searchQuery={searchQuery}
+          />
         </div>
       )}
     </div>
