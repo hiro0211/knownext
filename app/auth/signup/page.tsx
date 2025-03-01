@@ -41,12 +41,12 @@ export default function SignUpPage() {
 
   // フォーム送信時の処理
   const onSubmit = async (values: SignUpFormValues) => {
-    // toast.loading でローディング状態を表示し、返ってくるIDで管理する
+    // toast.loading でローディング状態を表示する
     toast.loading("ユーザー登録中...");
     const { email, password } = values;
 
     try {
-      // 1) Supabase Authでユーザー作成
+      // Supabase Authでユーザー作成
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -56,7 +56,7 @@ export default function SignUpPage() {
         throw error;
       }
 
-      // 2) カスタムUsersテーブルへの登録
+      //カスタムUsersテーブルへの登録
       if (data.user) {
         const { error: insertError } = await supabase.from("Users").insert({
           id: data.user.id, // AuthユーザーID (UUID)

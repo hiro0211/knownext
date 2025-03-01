@@ -9,7 +9,7 @@ import dayjs from "dayjs";
 import toast from "react-hot-toast";
 
 import { supabase } from "@/lib/supabaseClient";
-import Loading from "@/app/loading";
+
 import {
   Form,
   FormField,
@@ -64,7 +64,6 @@ export default function EditPostForm({ post }: EditPostFormProps) {
   const [filePreview, setFilePreview] = useState<string | null>(
     post.image_path
   );
-  const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
   // 日付表示のフォーマット
@@ -121,9 +120,8 @@ export default function EditPostForm({ post }: EditPostFormProps) {
 
   // フォーム送信時
   const onSubmit = async (values: EditFormValues) => {
-    setSubmitting(true);
     setFormError(null);
-    toast.loading("更新中...");
+    const toastId = toast.loading("更新中...");
 
     try {
       // ログインユーザー取得
@@ -132,12 +130,11 @@ export default function EditPostForm({ post }: EditPostFormProps) {
         error: userError,
       } = await supabase.auth.getUser();
       if (userError || !user) {
-        toast.dismiss();
+        toast.dismiss(toastId);
         toast.error("ログインしていません");
         setFormError(
           "ログインが必要です。ログインページからログインしてください。"
         );
-        setSubmitting(false);
         return;
       }
 
@@ -154,10 +151,9 @@ export default function EditPostForm({ post }: EditPostFormProps) {
           });
 
         if (uploadError) {
-          toast.dismiss();
+          toast.dismiss(toastId);
           toast.error("画像アップロードに失敗しました");
           setFormError(`画像アップロードエラー: ${uploadError.message}`);
-          setSubmitting(false);
           return;
         }
 
@@ -179,14 +175,13 @@ export default function EditPostForm({ post }: EditPostFormProps) {
         .eq("id", post.id);
 
       if (updateError) {
-        toast.dismiss();
+        toast.dismiss(toastId);
         toast.error("更新に失敗しました");
         setFormError(`更新エラー: ${updateError.message}`);
-        setSubmitting(false);
         return;
       }
 
-      toast.dismiss();
+      toast.dismiss(toastId);
       toast.success("記事を更新しました");
 
       // 2秒後に記事詳細ページへリダイレクト
@@ -195,19 +190,16 @@ export default function EditPostForm({ post }: EditPostFormProps) {
       }, 1500);
       
     } catch (err: unknown) {
-      toast.dismiss();
+      toast.dismiss(toastId);
       if (err instanceof Error) {
         toast.error("エラーが発生しました");
         setFormError(`予期せぬエラー: ${err.message}`);
       }
-      setSubmitting(false);
     }
   };
 
   return (
     <div className="relative w-full max-w-2xl mx-auto mt-8 p-4">
-      {submitting && <Loading />}
-
       <div className="flex items-center space-x-2 mb-6">
         <PenSquare className="h-6 w-6 text-blue-600" />
         <h1 className="text-2xl font-bold">記事編集</h1>
@@ -334,7 +326,7 @@ export default function EditPostForm({ post }: EditPostFormProps) {
           <Button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 transition-colors"
-            disabled={submitting}
+            // submitting 状態を削除
           >
             <Save className="h-5 w-5 mr-2" />
             更新する

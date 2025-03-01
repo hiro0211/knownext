@@ -2,6 +2,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import PostDetail from "@/components/PostDetail"
 import CommentSection from "@/components/CommentSection"
+import toast from "react-hot-toast"
 
 type PageProps = {
   params: { id: string }
@@ -10,7 +11,7 @@ type PageProps = {
 export default async function PostDetailPage({ params }: PageProps) {
   const supabase = createServerComponentClient({ cookies })
 
-  // 1) Postsテーブルから、idに該当する記事を取得 (UsersテーブルとJOIN)
+  // Postsテーブルから、idに該当する記事を取得 (UsersテーブルとJOIN)
   const { data: postData, error: postError } = await supabase
     .from("Posts")
     .select("*, user:Users(email, id)") // JOINしたユーザー情報を user という別名で取得
@@ -25,7 +26,7 @@ export default async function PostDetailPage({ params }: PageProps) {
     )
   }
 
-  // 2) Commentsテーブルから、この投稿に紐づくコメント一覧を取得 (ユーザー情報もJOIN)
+  // Commentsテーブルから、post_idに該当するコメントを取得 (UsersテーブルとJOIN)
   const { data: commentsData, error: commentsError } = await supabase
     .from("Comments")
     .select("*, user:Users(email, id)")
@@ -34,7 +35,7 @@ export default async function PostDetailPage({ params }: PageProps) {
 
   if (commentsError) {
     // コメント取得に失敗しても、記事詳細だけは表示
-    console.error("コメント取得エラー:", commentsError.message)
+    toast.error("コメントの取得に失敗しました: " + commentsError.message) 
   }
 
   return (

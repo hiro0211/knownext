@@ -5,7 +5,6 @@ import PostList from "@/components/PostList";
 import { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabaseClient";
 import toast from "react-hot-toast";
-import { Loader2 } from "lucide-react";
 
 type PostType = {
   id: number;
@@ -21,7 +20,6 @@ type PostType = {
 export default function MyPage() {
   const [user, setUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<PostType[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserAndPosts = async () => {
@@ -60,25 +58,14 @@ export default function MyPage() {
         toast.success("データを読み込みました", { id: toastId });
       } catch (err: unknown) {
         if (err instanceof Error) {
+          toast.dismiss(toastId);
           toast.error(`エラー: ${err.message}`, { id: toastId });
         }
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchUserAndPosts();
   }, []);
-
-  // ローディング中
-  if (loading) {
-    return (
-      <div className="w-full flex flex-col items-center justify-center p-12">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-400 mb-4" />
-        <p className="text-gray-500">読み込み中...</p>
-      </div>
-    );
-  }
 
   // ログインしていない場合
   if (!user) {

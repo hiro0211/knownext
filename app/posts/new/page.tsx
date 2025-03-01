@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { supabase } from "@/lib/supabaseClient";
 import toast from "react-hot-toast";
-import Loading from "@/app/loading";
 import {
   Form,
   FormField,
@@ -34,7 +33,6 @@ export default function NewPostPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
   // フォーム初期化
@@ -88,9 +86,8 @@ export default function NewPostPage() {
 
   // フォーム送信時
   const onSubmit = async (values: PostFormValues) => {
-    setSubmitting(true);
     setFormError(null);
-    toast.loading("投稿中...");
+    const toastId = toast.loading("投稿中...");
 
     try {
       // 1) ログイン中のユーザーIDを取得
@@ -100,12 +97,9 @@ export default function NewPostPage() {
       } = await supabase.auth.getUser();
 
       if (userError || !user) {
-        toast.dismiss();
+        toast.dismiss(toastId);
         toast.error("ログインしてください");
-        setFormError(
-          "ログインが必要です。ログインページからログインしてください。"
-        );
-        setSubmitting(false);
+        setFormError("ログインが必要です。ログインページからログインしてください。");
         return;
       }
 
@@ -124,10 +118,9 @@ export default function NewPostPage() {
           });
 
         if (uploadError) {
-          toast.dismiss();
-          toast.error(`画像アップロードに失敗しました`);
+          toast.dismiss(toastId);
+          toast.error("画像アップロードに失敗しました");
           setFormError(`画像アップロードエラー: ${uploadError.message}`);
-          setSubmitting(false);
           return;
         }
 
@@ -147,15 +140,14 @@ export default function NewPostPage() {
       });
 
       if (insertError) {
-        toast.dismiss();
+        toast.dismiss(toastId);
         toast.error("投稿に失敗しました");
         setFormError(`データベースエラー: ${insertError.message}`);
-        setSubmitting(false);
         return;
       }
 
       // 4) 投稿成功処理
-      toast.dismiss();
+      toast.dismiss(toastId);
       toast.success("記事を投稿しました");
 
       // トップページへ遷移
@@ -163,20 +155,16 @@ export default function NewPostPage() {
         router.push("/");
       }, 1500);
     } catch (error: unknown) {
-      toast.dismiss();
+      toast.dismiss(toastId);
       if (error instanceof Error) {
         toast.error("エラーが発生しました");
         setFormError(`予期せぬエラー: ${error.message}`);
-        setSubmitting(false);
-        return;
       }
     }
   };
 
   return (
     <div className="relative w-full max-w-2xl mx-auto mt-8 p-4">
-      {submitting && <Loading />}
-
       <div className="flex items-center space-x-2 mb-6">
         <PenSquare className="h-6 w-6 text-blue-600" />
         <h1 className="text-2xl font-bold">新規投稿</h1>
@@ -293,11 +281,10 @@ export default function NewPostPage() {
             )}
           />
 
-          {/* 送信ボタン */}
+          {/* 更新ボタン */}
           <Button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 transition-colors"
-            disabled={submitting}
           >
             <PenSquare className="h-5 w-5 mr-2" />
             投稿する

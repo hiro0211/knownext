@@ -8,10 +8,8 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Mail, Lock, LogIn, ArrowRight } from "lucide-react";
 
-// Supabaseクライアント
 import { supabase } from "@/lib/supabaseClient";
 
-// shadcn/uiフォーム関連
 import {
   Form,
   FormField,
@@ -31,14 +29,11 @@ const loginSchema = z.object({
   password: z.string().min(8, "パスワードは8文字以上で入力してください"),
 });
 
-// バリデーションで使う型
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
-  const [loading, setLoading] = React.useState(false);
 
-  // react-hook-form の初期化
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -47,37 +42,32 @@ export default function LoginPage() {
     },
   });
 
-  // フォーム送信時の処理
   const onSubmit = async (values: LoginFormValues) => {
-    setLoading(true);
+    // トーストでフィードバックを表示
     toast.loading("ログイン中...");
 
+    // ログイン処理
     const { email, password } = values;
 
     try {
-      // Supabase Authを使ったログイン
+      // 
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      // エラーがあればメッセージ表示
       if (error) {
         throw error;
       }
 
-      // ログイン成功
       toast.dismiss();
       toast.success("ログインに成功しました");
-
-      // ログイン後のページに遷移
       router.push("/");
     } catch (error: unknown) {
       toast.dismiss();
       if (error instanceof Error) {
-        toast.error("ログインに失敗しました: " + error.message)};
-    } finally {
-      setLoading(false);
+        toast.error("ログインに失敗しました: " + error.message);
+      }
     }
   };
 
@@ -90,15 +80,14 @@ export default function LoginPage() {
             <LogIn size={24} />
           </div>
           <h1 className="text-2xl font-bold">ログイン</h1>
-          <p className="text-gray-500 text-sm mt-1">アカウントにログインしてください</p>
+          <p className="text-gray-500 text-sm mt-1">
+            アカウントにログインしてください
+          </p>
         </div>
 
         {/* フォーム本体 */}
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-5"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             {/* Email */}
             <FormField
               control={form.control}
@@ -145,9 +134,12 @@ export default function LoginPage() {
               )}
             />
 
-            {/* パスワードを忘れた場合 */}
+            {/* パスワードを忘れた場合 まだ実装はしていない。リンクのみ表示 */}
             <div className="text-right">
-              <Link href="/auth/reset-password" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">
+              <Link
+                href="/auth/reset-password"
+                className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+              >
                 パスワードをお忘れですか？
               </Link>
             </div>
@@ -156,16 +148,9 @@ export default function LoginPage() {
             <Button
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition-colors flex items-center justify-center"
-              disabled={loading}
             >
-              {loading ? (
-                "ログイン中..."
-              ) : (
-                <>
-                  ログイン
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </>
-              )}
+              ログイン
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </form>
         </Form>
@@ -173,7 +158,10 @@ export default function LoginPage() {
         {/* まだアカウントが無い場合のリンク */}
         <div className="mt-6 text-center text-sm text-gray-600 pt-4 border-t border-gray-100">
           アカウントを持っていませんか？{" "}
-          <Link href="/auth/signup" className="text-blue-600 hover:text-blue-800 font-medium transition-colors">
+          <Link
+            href="/auth/signup"
+            className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
+          >
             新規登録
           </Link>
         </div>
