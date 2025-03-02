@@ -92,8 +92,6 @@ export default function SignUpPage() {
           </p>
         </div>
 
-        {/* 以前のメッセージ表示エリアは削除 */}
-
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             {/* メールアドレス */}
