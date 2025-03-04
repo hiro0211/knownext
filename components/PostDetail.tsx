@@ -28,6 +28,7 @@ export default function PostDetail({ post }: PostDetailProps) {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [sessionUserId, setSessionUserId] = useState<string | null>(null);
 
+  // ログインユーザーのIDを取得
   useEffect(() => {
     const fetchUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -49,6 +50,7 @@ export default function PostDetail({ post }: PostDetailProps) {
       }
       toast.dismiss(toastId);
       toast.success("記事を削除しました。");
+      router.refresh();
       setTimeout(() => {
         router.push("/");
       }, 2000);

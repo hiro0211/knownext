@@ -42,7 +42,6 @@ export default async function PostDetailPage({ params }: PageProps) {
     <div className="max-w-4xl mx-auto p-4">
       {/* 記事詳細表示 (クライアントコンポーネント) */}
       <PostDetail post={postData} />
-
       {/* コメント一覧＆コメント投稿フォーム (クライアントコンポーネント) */}
       <CommentSection
         postId={postData.id}

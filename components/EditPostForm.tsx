@@ -184,6 +184,7 @@ export default function EditPostForm({ post }: EditPostFormProps) {
       toast.dismiss(toastId);
       toast.success("記事を更新しました");
 
+      router.refresh();
       // 2秒後に記事詳細ページへリダイレクト
       setTimeout(() => {
         router.push(`/posts/${post.id}`);

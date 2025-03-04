@@ -23,7 +23,7 @@ export default function MyPage() {
 
   useEffect(() => {
     const fetchUserAndPosts = async () => {
-      const toastId = toast.loading("データを読み込み中...");
+      toast.loading("データを読み込み中...");
 
       try {
         // ユーザー情報を取得
@@ -34,9 +34,10 @@ export default function MyPage() {
           throw new Error(userError.message);
         }
 
+        // ユーザー情報が取得できない場合はnullをセット
         if (!userData.user) {
           setUser(null);
-          toast.dismiss(toastId);
+          toast.dismiss();
           return;
         }
 
@@ -54,12 +55,12 @@ export default function MyPage() {
         }
 
         setPosts(postsData || []);
-        toast.dismiss(toastId);
-        toast.success("データを読み込みました", { id: toastId });
+        toast.dismiss();
+        toast.success("データを読み込みました");
       } catch (err: unknown) {
         if (err instanceof Error) {
-          toast.dismiss(toastId);
-          toast.error(`エラー: ${err.message}`, { id: toastId });
+          toast.dismiss();
+          toast.error(`エラー: ${err.message}`);
         }
       }
     };
@@ -67,7 +68,7 @@ export default function MyPage() {
     fetchUserAndPosts();
   }, []);
 
-  // ログインしていない場合
+  // ログインしていない場合 Navigationでログインを管理しているが、直接URLを入力された場合の対策
   if (!user) {
     return (
       <div className="p-4 text-red-500 max-w-6xl mx-auto mt-8 border border-red-200 bg-red-50 rounded-md">
