@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image"; // ★ 追加
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import dayjs from "dayjs";
@@ -79,10 +80,12 @@ export default function PostDetail({ post }: PostDetailProps) {
         {/* 画像表示 */}
         {post.image_path ? (
           <div className="relative w-full h-64 md:h-80">
-            <img
+            <Image
               src={post.image_path}
               alt={post.title}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
+              unoptimized
             />
           </div>
         ) : (

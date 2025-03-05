@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import Image from "next/image"; 
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -189,7 +190,7 @@ export default function EditPostForm({ post }: EditPostFormProps) {
       setTimeout(() => {
         router.push(`/posts/${post.id}`);
       }, 1500);
-      
+
     } catch (err: unknown) {
       toast.dismiss(toastId);
       if (err instanceof Error) {
@@ -230,10 +231,15 @@ export default function EditPostForm({ post }: EditPostFormProps) {
           >
             {filePreview ? (
               <div className="relative">
-                <img
+                {/* ★ ここを <img> から <Image> に変更 */}
+                <Image
                   src={filePreview}
                   alt="プレビュー"
                   className="max-h-48 mx-auto rounded-md"
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  unoptimized
                 />
                 <button
                   type="button"
@@ -327,7 +333,6 @@ export default function EditPostForm({ post }: EditPostFormProps) {
           <Button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 transition-colors"
-            // submitting 状態を削除
           >
             <Save className="h-5 w-5 mr-2" />
             更新する

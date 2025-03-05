@@ -3,6 +3,7 @@
 import React from "react";
 import dayjs from "dayjs";
 import Link from "next/link";
+import Image from "next/image"; 
 import { CalendarClock, Mail, ArrowRight } from "lucide-react";
 
 type PostProps = {
@@ -30,11 +31,13 @@ export default function Post({ post }: PostProps) {
       <div className="border rounded-md p-4 shadow-sm hover:shadow-md transition-shadow group hover:border-blue-200">
         {/* 画像がある場合 */}
         {post.image_path ? (
-          <div className="relative overflow-hidden rounded-md mb-4">
-            <img
+          <div className="relative w-full h-40 overflow-hidden rounded-md mb-4">
+            <Image
               src={post.image_path}
               alt={post.title}
-              className="w-full h-40 object-cover rounded-md transition-transform group-hover:scale-105"
+              fill
+              className="object-cover rounded-md transition-transform group-hover:scale-105"
+              unoptimized
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
           </div>
@@ -46,7 +49,9 @@ export default function Post({ post }: PostProps) {
         )}
 
         {/* タイトル */}
-        <h2 className="font-bold text-lg mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">{post.title}</h2>
+        <h2 className="font-bold text-lg mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+          {post.title}
+        </h2>
 
         {/* 本文 (一部だけ表示する例) */}
         <p className="text-sm text-gray-700 line-clamp-2 mb-3">{post.content}</p>

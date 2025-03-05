@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import Image from "next/image"; 
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -190,10 +191,15 @@ export default function NewPostPage() {
           >
             {filePreview ? (
               <div className="relative">
-                <img
+                {/* ★ ここを <img> から <Image> に変更 */}
+                <Image
                   src={filePreview}
                   alt="プレビュー"
                   className="max-h-48 mx-auto rounded-md"
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  unoptimized
                 />
                 <button
                   type="button"
