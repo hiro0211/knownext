@@ -1,4 +1,4 @@
-#アプリURL
+#アプリ URL
 [https://knownext-gamma.vercel.app](https://knownext-gamma.vercel.app)
 
 #アプリについて
@@ -8,14 +8,13 @@
 ##ログイン画面
 ![ログイン画面](./public/knownextLogin.png)
 
-メールアドレスとパスワードを入力すれば、メールアドレスに本登録の案内メールが届きます。そのメール中のURLをクリックすることで登録完了です。
+メールアドレスとパスワードを入力すれば、メールアドレスに本登録の案内メールが届きます。そのメール中の URL をクリックすることで登録完了です。
 パスワードリセット機能は開発中です
 
 ##メイン画面
 
 投稿された記事を閲覧できるホーム画面です。
 ![メイン画面](./public/KnownextPostList.png)
-
 
 ##検索機能
 キーワードを入力すれば、関連する記事を検索できます。
@@ -31,7 +30,7 @@
 
 ##記事編集、削除
 記事投稿者当人なら、編集と削除ができます。
-![記事編集、削除画面](.)
+![記事編集、削除画面](./public/KnowNext%20Edit&Delete.png)
 
 ##新規投稿画面
 タイトル、内容を記入すれば記事を投稿できます。タイトル画像も載せれます。
@@ -53,7 +52,7 @@ Tailwind CSS
 ユーティリティファーストの CSS フレームワークを採用。tailwindcss-animate や tailwind-merge も利用しています。
 Radix UI
 アクセシブルな UI コンポーネントとして、@radix-ui/react-icons、@radix-ui/react-label、@radix-ui/react-slot を導入。
-UI補助ライブラリ
+UI 補助ライブラリ
 lucide-react: アイコンライブラリ
 react-hot-toast: 通知機能の実装
 フォーム管理・バリデーション
@@ -62,7 +61,7 @@ zod によるスキーマバリデーション
 その他ユーティリティ
 clsx と class-variance-authority による動的クラス名管理
 date-fns と dayjs で日付処理
-uuid によるユニークID生成
+uuid によるユニーク ID 生成
 base64-arraybuffer を用いたデータのエンコード処理
 【バックエンド】
 
