@@ -53,29 +53,40 @@
 
 ## 【フロントエンド】
 
-Next.js (React)
-Next.js をベースに、React によるコンポーネント設計で開発しています。
-TypeScript
-型安全性を高め、開発効率を向上させています。
-Tailwind CSS
-ユーティリティファーストの CSS フレームワークを採用。tailwindcss-animate や tailwind-merge も利用しています。
-Radix UI
-アクセシブルな UI コンポーネントとして、@radix-ui/react-icons、@radix-ui/react-label、@radix-ui/react-slot を導入。
-UI 補助ライブラリ
-lucide-react: アイコンライブラリ
-react-hot-toast: 通知機能の実装
-フォーム管理・バリデーション
-react-hook-form と @hookform/resolvers による効率的なフォーム管理
-zod によるスキーマバリデーション
-その他ユーティリティ
-clsx と class-variance-authority による動的クラス名管理
-date-fns と dayjs で日付処理
-uuid によるユニーク ID 生成
-base64-arraybuffer を用いたデータのエンコード処理
+### Next.js (React)
+Next.jsをベースに採用し、Reactのコンポーネント設計の思想に基づいた効率的な開発を行っています。モダンなUIと優れたユーザー体験を提供するための基盤となっています。
+### TypeScript
+強力な型システムを活用することで、開発段階でのエラー検出を可能にし、コードの品質と保守性を高めています。チーム開発においても安全性と効率性を向上させる重要な要素となっています。
+
+### Tailwind CSS
+ユーティリティファーストのアプローチで迅速なスタイリングを実現しています。tailwindcss-animateによるアニメーション効果やtailwind-mergeを用いた柔軟なクラス結合も活用し、洗練されたデザインを効率的に構築しています。
+### Radix UI
+アクセシビリティを考慮した高品質なUIコンポーネントとして、以下のライブラリを採用しています：
+
+@radix-ui/react-icons
+@radix-ui/react-label
+@radix-ui/react-slot
+
+### UI補助ライブラリ
+
+lucide-react: 美しく一貫性のあるアイコンセットを提供
+react-hot-toast: ユーザーフレンドリーな通知システムの実装
+
+### フォーム管理とバリデーション
+
+react-hook-form と @hookform/resolvers: パフォーマンスに優れたフォーム状態管理
+zod: 堅牢なスキーマ定義とバリデーション処理
+
+### ユーティリティ
+
+clsx と class-variance-authority: 条件に応じた効率的なクラス名の管理
+date-fns と dayjs: 柔軟で直感的な日付操作
+uuid: 安全なユニークID生成
+base64-arraybuffer: バイナリデータと文字列間の効率的な変換処理
 
 ## 【バックエンド】
 
-Supabase
+### Supabase
 @supabase/auth-helpers-nextjs、@supabase/ssr、@supabase/supabase-js を利用し、認証機能やデータ管理を実現しています。
 画像処理・アップロード
 sharp: サーバーサイドでの画像加工に使用
@@ -83,12 +94,12 @@ react-images-uploading: 画像アップロード機能の実装
 
 ## 【バージョン管理】
 
-GitHub
+### GitHub
 ソースコードは https://github.com/hiro0211/knownext で管理しています。
 
 ## 【デプロイ】
 
-Vercel
+### Vercel
 Vercel を利用して、CI/CD 環境の下でアプリをデプロイしています。
 【API】
 
