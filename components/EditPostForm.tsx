@@ -231,7 +231,6 @@ export default function EditPostForm({ post }: EditPostFormProps) {
           >
             {filePreview ? (
               <div className="relative">
-                {/* ★ ここを <img> から <Image> に変更 */}
                 <Image
                   src={filePreview}
                   alt="プレビュー"
@@ -239,7 +238,6 @@ export default function EditPostForm({ post }: EditPostFormProps) {
                   width={0}
                   height={0}
                   sizes="100vw"
-                  unoptimized
                 />
                 <button
                   type="button"

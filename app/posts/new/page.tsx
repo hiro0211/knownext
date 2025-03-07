@@ -199,7 +199,6 @@ export default function NewPostPage() {
                   width={0}
                   height={0}
                   sizes="100vw"
-                  unoptimized
                 />
                 <button
                   type="button"

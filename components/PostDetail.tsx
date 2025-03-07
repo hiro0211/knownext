@@ -85,7 +85,6 @@ export default function PostDetail({ post }: PostDetailProps) {
               alt={post.title}
               fill
               className="object-cover"
-              unoptimized
             />
           </div>
         ) : (
