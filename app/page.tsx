@@ -63,7 +63,7 @@ export default async function Home({
       <div className="mb-6">
         <SearchForm />
       </div>
-
+            
       {/* 投稿一覧部分: リアルタイム更新対応コンポーネント */}
       <RealTimePostList page={page} searchQuery={searchQuery} />
 
