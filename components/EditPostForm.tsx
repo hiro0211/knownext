@@ -238,6 +238,7 @@ export default function EditPostForm({ post }: EditPostFormProps) {
                   width={0}
                   height={0}
                   sizes="100vw"
+                  unoptimized
                 />
                 <button
                   type="button"
