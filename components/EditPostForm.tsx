@@ -106,7 +106,6 @@ export default function EditPostForm({ post }: EditPostFormProps) {
       reader.onloadend = () => {
         setFilePreview(reader.result as string);
       };
-      console.log("レンダー" + reader.readAsDataURL(selectedFile));
       reader.readAsDataURL(selectedFile);
     }
   };
@@ -142,7 +141,6 @@ export default function EditPostForm({ post }: EditPostFormProps) {
 
       // 画像を新しくアップロードする場合のみ、Storageにアップロード
       let imagePath = post.image_path; // 既存の画像を維持
-      console.log("file", file);
       if (file) {
         const fileExt = file.name.split(".").pop();
         const fileName = `${user.id}_${Date.now()}.${fileExt}`;
