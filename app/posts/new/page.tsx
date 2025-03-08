@@ -198,9 +198,7 @@ export default function NewPostPage() {
                   src={filePreview}
                   alt="プレビュー"
                   className="max-h-48 mx-auto rounded-md"
-                  width={0}
-                  height={0}
-                  sizes="100vw"
+                  fill
                   unoptimized
                 />
                 <button

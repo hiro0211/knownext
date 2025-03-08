@@ -2,8 +2,9 @@
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
-  // config options here
+  images: {
+    domains: ['https://knownext-gamma.vercel.app'], 
+  },
 };
 
-// ESM 形式のエクスポート
 export default nextConfig;
