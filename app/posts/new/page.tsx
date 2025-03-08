@@ -192,8 +192,7 @@ export default function NewPostPage() {
             }`}
           >
             {filePreview ? (
-              <div className="relative">
-                {/* ★ ここを <img> から <Image> に変更 */}
+              <div className="relative h-48">
                 <Image
                   src={filePreview}
                   alt="プレビュー"
